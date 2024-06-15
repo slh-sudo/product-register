@@ -9,32 +9,49 @@ function ProductRegistration() {
         setProduct({ ...product, [e.target.name]: e.target.value });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         if (!product.name || !product.price || !product.description) {
             setError('全てのフィールドを入力してください');
         } else {
-            console.log(product);
-            // ここで製品情報をバックエンドに送信します。
-            setError('');
+            try {
+                const response = await fetch('http://localhost:3000/register-product', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(product)
+                });
+
+                if (!response.ok) {
+                    throw new Error('レスポンスエラー');
+                }
+
+                const data = await response.json();
+                console.log(data);
+                setError('');
+            } catch (err) {
+                console.error(err);
+                setError('サーバーエラー');
+            }
         }
     };
 
     return (
         <div className="form-container">
             <form onSubmit={handleSubmit}>
-                <label>
-                    商品名:
+                <div className="field-container">
+                    <label>商品名:</label>
                     <input type="text" name="name" value={product.name} onChange={handleChange} />
-                </label>
-                <label>
-                    価格:
-                    <input type="text" name="price" value={product.price} onChange={handleChange} />
-                </label>
-                <label>
-                    説明:
+                </div>
+                <div className="field-container">
+                    <label>価格:</label>
+                    <input type="text" name="price" value={product.price} onChange={handleChange} className="narrow" />
+                </div>
+                <div className="field-container">
+                    <label>説明:</label>
                     <textarea name="description" value={product.description} onChange={handleChange} />
-                </label>
+                </div>
                 <input type="submit" value="登録" />
                 {error && <p>{error}</p>}
             </form>
