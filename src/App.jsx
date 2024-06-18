@@ -15,7 +15,7 @@ function ProductRegistration() {
             setError('全てのフィールドを入力してください');
         } else {
             try {
-                const response = await fetch('http://10.0.0.4:3000/register-product', {
+                const response = await fetch('http://20.37.116.2:3000/register-product', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
